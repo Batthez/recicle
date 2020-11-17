@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 object MVI {
@@ -96,7 +97,7 @@ object MVI {
 
         init {
             viewModelScope.launch {
-                actionsChannel.receiveAsFlow().collect { action -> action() }
+                actionsChannel.receiveAsFlow().collect{action -> action()}
             }
         }
 
