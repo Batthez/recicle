@@ -4,10 +4,12 @@ import com.matthbr.recicle.data.repository.ItemListRepositoryImpl
 import com.matthbr.recicle.domain.model.Item
 import com.matthbr.recicle.mvi.MVI
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 
-class ItemDetailsStore(
+@InternalCoroutinesApi
+class ItemStore(
     private val itemListRepository  : ItemListRepositoryImpl
-) : MVI.Store<ItemDetailsStore.Data, ItemDetailsStore.Intent>() {
+) : MVI.Store<ItemStore.Data, ItemStore.Intent>() {
 
     data class Data(
         var itemList : List<Item> ? = null,
@@ -39,4 +41,10 @@ class ItemDetailsStore(
                 )
             )
         }
+
+    fun actionLoadItems() = produceAction { dispatch ->
+        dispatch(MVI.Store.Intent.LoadingIntent(loading = true))
+        dispatch(Intent.LoadAllItems())
+        dispatch(MVI.Store.Intent.LoadingIntent(loading = false))
+    }
 }

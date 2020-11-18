@@ -5,12 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 object MVI {
 
+    @InternalCoroutinesApi
     @Suppress("UNCHECKED_CAST")
     @ExperimentalCoroutinesApi
     abstract class Store<DATA, INTENT: Store.Intent> : ViewModel() {
@@ -97,7 +100,7 @@ object MVI {
 
         init {
             viewModelScope.launch {
-                actionsChannel.receiveAsFlow().collect{action -> action()}
+                actionsChannel.receiveAsFlow().collect { action -> action() }
             }
         }
 
