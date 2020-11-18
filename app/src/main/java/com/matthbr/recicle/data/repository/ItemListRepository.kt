@@ -7,6 +7,9 @@ import kotlinx.coroutines.withContext
 
 interface ItemListRepository{
     suspend fun getAllItems() : List<Item>
+    suspend fun insertNewItem(item : Item)
+    suspend fun updateItem(item: Item)
+    suspend fun deleteItem(item: Item)
 }
 
 class ItemListRepositoryImpl(
@@ -14,6 +17,18 @@ class ItemListRepositoryImpl(
 ) : ItemListRepository{
     override suspend fun getAllItems(): List<Item> = withContext(Dispatchers.IO){
         itemDAO.getAllItems()
+    }
+
+    override suspend fun insertNewItem(item : Item) = withContext(Dispatchers.IO){
+        itemDAO.insertNewItem(item)
+    }
+
+    override suspend fun updateItem(item: Item) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteItem(item: Item) {
+        TODO("Not yet implemented")
     }
 
 }

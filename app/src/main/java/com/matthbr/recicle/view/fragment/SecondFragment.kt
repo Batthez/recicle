@@ -9,9 +9,6 @@ import android.widget.Button
 import androidx.navigation.fragment.findNavController
 import com.matthbr.recicle.R
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
 class SecondFragment : Fragment() {
 
     override fun onCreateView(

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 class Item(
     @PrimaryKey(autoGenerate = true)
-    private val id : Int,
-    private val description : String,
-    private val quantity : Int
+    val id : Int,
+    val description : String,
+    val quantity : Int
 )

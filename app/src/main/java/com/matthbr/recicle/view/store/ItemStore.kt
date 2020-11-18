@@ -8,7 +8,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
 class ItemStore(
-    private val itemListRepository  : ItemListRepositoryImpl
+    private val itemRepository  : ItemListRepositoryImpl
 ) : MVI.Store<ItemStore.Data, ItemStore.Intent>() {
 
     data class Data(
@@ -18,21 +18,23 @@ class ItemStore(
     @ExperimentalCoroutinesApi
     sealed class Intent : MVI.Store.Intent(){
         class LoadAllItems : Intent()
+        class InsertNewItem(
+            val description : String,
+            val quantity : Int
+        ) : Intent()
     }
 
     override fun initialData(): Data = Data()
 
-    @ExperimentalCoroutinesApi
     override suspend fun resolveIntent(intent: Intent) =
         when(intent){
             is Intent.LoadAllItems -> reducerLoadCustomerWithDetails(intent)
+            is Intent.InsertNewItem -> reducerInsertNewItem(intent)
         }
 
 
-     private suspend fun reducerLoadCustomerWithDetails(intent: Intent.LoadAllItems) =
-        produceReducer { setState ->
-
-            val itemList = itemListRepository.getAllItems()
+     private suspend fun reducerLoadCustomerWithDetails(intent: Intent.LoadAllItems) = produceReducer { setState ->
+            val itemList = itemRepository.getAllItems()
 
             setState(
                 getState().copy(
@@ -43,10 +45,30 @@ class ItemStore(
             )
         }
 
-    @ExperimentalCoroutinesApi
+    private suspend fun reducerInsertNewItem(intent : Intent.InsertNewItem) = produceReducer {setState ->
+        itemRepository.insertNewItem(Item(
+            1,
+            intent.description,
+            intent.quantity
+        ))
+
+        setState(
+            getState().copy(
+                message = Message(MessageType.SUCCESS,null,"Item cadastrado!")
+            )
+        )
+
+    }
+
     fun actionLoadItems() = produceAction { dispatch ->
         dispatch(MVI.Store.Intent.LoadingIntent(loading = true))
         dispatch(Intent.LoadAllItems())
+        dispatch(MVI.Store.Intent.LoadingIntent(loading = false))
+    }
+
+    fun actionInsertItem(description : String, quantity : Int) = produceAction { dispatch ->
+        dispatch(MVI.Store.Intent.LoadingIntent(loading = true))
+        dispatch(Intent.InsertNewItem(description,quantity))
         dispatch(MVI.Store.Intent.LoadingIntent(loading = false))
     }
 }
