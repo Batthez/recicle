@@ -22,6 +22,7 @@ class ItemStore(
 
     override fun initialData(): Data = Data()
 
+    @ExperimentalCoroutinesApi
     override suspend fun resolveIntent(intent: Intent) =
         when(intent){
             is Intent.LoadAllItems -> reducerLoadCustomerWithDetails(intent)
@@ -42,6 +43,7 @@ class ItemStore(
             )
         }
 
+    @ExperimentalCoroutinesApi
     fun actionLoadItems() = produceAction { dispatch ->
         dispatch(MVI.Store.Intent.LoadingIntent(loading = true))
         dispatch(Intent.LoadAllItems())
