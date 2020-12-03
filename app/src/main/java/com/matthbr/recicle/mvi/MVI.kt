@@ -13,9 +13,7 @@ import kotlinx.coroutines.launch
 
 object MVI {
 
-    @InternalCoroutinesApi
     @Suppress("UNCHECKED_CAST")
-    @ExperimentalCoroutinesApi
     abstract class Store<DATA, INTENT: Store.Intent> : ViewModel() {
 
         val state: LiveData<State<DATA>> get() = _state

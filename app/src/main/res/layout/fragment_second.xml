@@ -35,6 +35,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_descricao"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/descri_o_do_item" />
@@ -46,14 +47,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:hint="0"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="@string/insira_a_quantidade"
+
             >
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_quantidade"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="none"
+                android:inputType="number"
                 android:textAlignment="center"
                 />
 
@@ -63,8 +66,10 @@
 
     <Button
         android:id="@+id/button_second"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:layout_margin="20dp"
         android:text="@string/cadastrar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

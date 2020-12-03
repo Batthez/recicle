@@ -6,7 +6,6 @@ import com.matthbr.recicle.mvi.MVI
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 
-@InternalCoroutinesApi
 class ItemStore(
     private val itemRepository  : ItemListRepositoryImpl
 ) : MVI.Store<ItemStore.Data, ItemStore.Intent>() {
@@ -33,7 +32,7 @@ class ItemStore(
         }
 
 
-     private suspend fun reducerLoadCustomerWithDetails(intent: Intent.LoadAllItems) = produceReducer { setState ->
+    private suspend fun reducerLoadCustomerWithDetails(intent: Intent.LoadAllItems) = produceReducer { setState ->
             val itemList = itemRepository.getAllItems()
 
             setState(
@@ -47,7 +46,7 @@ class ItemStore(
 
     private suspend fun reducerInsertNewItem(intent : Intent.InsertNewItem) = produceReducer {setState ->
         itemRepository.insertNewItem(Item(
-            1,
+            0,
             intent.description,
             intent.quantity
         ))
@@ -71,4 +70,10 @@ class ItemStore(
         dispatch(Intent.InsertNewItem(description,quantity))
         dispatch(MVI.Store.Intent.LoadingIntent(loading = false))
     }
+
+    fun actionClearMessage() = produceAction {
+
+    }
+
+
 }
