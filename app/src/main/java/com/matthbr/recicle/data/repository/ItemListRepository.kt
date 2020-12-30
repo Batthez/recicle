@@ -10,6 +10,7 @@ interface ItemListRepository{
     suspend fun insertNewItem(item : Item)
     suspend fun updateItem(item: Item)
     suspend fun deleteItem(item: Item)
+    suspend fun fetchItemById(itemId : Int) : Item
 }
 
 class ItemListRepositoryImpl(
@@ -29,6 +30,10 @@ class ItemListRepositoryImpl(
 
     override suspend fun deleteItem(item: Item) {
         itemDAO.deleteItem(item)
+    }
+
+    override suspend fun fetchItemById(itemId: Int) : Item = withContext(Dispatchers.IO) {
+        itemDAO.getItemById(itemId)
     }
 
 }

@@ -18,4 +18,6 @@
     <string name="preencha_os_campos">Preencha os campos obrigatorios!</string>
     <string name="insira_a_quantidade">Quantidade</string>
     <string name="ok">Ok</string>
+    <string name="atualize_informacoes">Atualize as informações</string>
+    <string name="carregando_item_aguarde">Carregando Item, aguarde...</string>
 </resources>

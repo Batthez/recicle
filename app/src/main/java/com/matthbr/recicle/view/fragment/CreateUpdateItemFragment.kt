@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.matthbr.recicle.R
 import com.matthbr.recicle.mvi.MVI
 import com.matthbr.recicle.view.store.ItemStore
@@ -20,6 +21,7 @@ class CreateUpdateItemFragment : Fragment() {
     private lateinit var store: ItemStore
     private lateinit var storeFactory: StoreFactory
     private lateinit var informationDialog: AlertDialog
+    private var isToUpdate = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,8 +31,23 @@ class CreateUpdateItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initStore()
+        verifyIfNeedsToUpdateItem()
         button_second.setOnClickListener {
-            insertNewItem()
+            onClickCreateUpdateButton()
+        }
+    }
+
+    private fun configureFragmentToUpdateItem(){
+        text_view_title.text = getString(R.string.atualize_informacoes)
+
+    }
+
+    private fun verifyIfNeedsToUpdateItem(){
+        arguments?.let {
+            val itemId = it.get("itemId")
+            if(itemId != null){
+                configureFragmentToUpdateItem()
+            }
         }
     }
 
@@ -54,11 +71,18 @@ class CreateUpdateItemFragment : Fragment() {
         button_second.isClickable = true
     }
 
-    private fun insertNewItem() {
+
+
+    private fun onClickCreateUpdateButton() {
         if (fieldsOk()) {
             val description = text_descricao.text.toString().trim()
             val quantity = text_quantidade.text.toString().toInt()
-            store.actionInsertItem(description, quantity)
+
+            if(isToUpdate){
+                store.actionUpdateItem(id, description,quantity)
+            }else{
+                store.actionInsertItem(description, quantity)
+            }
             disableButtonClickability()
         } else {
             Toast.makeText(
@@ -72,7 +96,9 @@ class CreateUpdateItemFragment : Fragment() {
     private fun stateObserver() = Observer<MVI.Store.State<ItemStore.Data>> { state ->
         with(state.data) {
             if (state.message?.type == MVI.Store.MessageType.SUCCESS) {
-                dialog(state.message.message!!)
+                state.message.message?.let {
+                    dialog(it)
+                }
                 enableButtonClickability()
             }
         }
@@ -95,5 +121,6 @@ class CreateUpdateItemFragment : Fragment() {
     private fun clearFields() {
         text_quantidade.setText("")
         text_descricao.setText("")
+        findNavController().navigate(R.id.action_close_fragment_and_navigate_to_listFragment)
     }
 }

@@ -10,6 +10,7 @@ class ItemStore(
 
     data class Data(
         var itemList: List<Item>? = null,
+        var actualItem : Item? = null
     )
 
     sealed class Intent : MVI.Store.Intent() {
@@ -22,7 +23,12 @@ class ItemStore(
             val itemToDelete : Item
         ) : Intent()
         class UpdateItem(
-            val updatedItem : Item
+            val itemId: Int,
+            val description: String,
+            val quantity: Int
+        ) : Intent()
+        class FetchItemById(
+            val itemId: Int
         ) : Intent()
     }
 
@@ -34,6 +40,7 @@ class ItemStore(
             is Intent.InsertNewItem -> reducerInsertNewItem(intent)
             is Intent.UpdateItem -> reducerUpdateItem(intent)
             is Intent.DeleteItem -> reducerDeleteItem(intent)
+            is Intent.FetchItemById -> reducerFetchItemById(intent)
         }
 
 
@@ -69,7 +76,11 @@ class ItemStore(
         }
 
     private suspend fun reducerUpdateItem(intent : Intent.UpdateItem) = produceReducer {setState ->
-        itemRepository.updateItem(intent.updatedItem)
+        itemRepository.updateItem(Item(
+            id = intent.itemId,
+            description = intent.description,
+            quantity = intent.quantity
+        ))
         setState(
             getState().copy(
                 message = Message(MessageType.SUCCESS, null, "Item atualizado!")
@@ -79,6 +90,10 @@ class ItemStore(
 
     private suspend fun reducerDeleteItem(intent : Intent.DeleteItem) = produceReducer { setState ->
         itemRepository.deleteItem(intent.itemToDelete)
+    }
+
+    private suspend fun reducerFetchItemById(intent : Intent.FetchItemById) = produceReducer { setState ->
+        val itemFetched = itemRepository.fetchItemById(intent.itemId)
     }
 
     fun actionLoadItems() = produceAction { dispatch ->
@@ -103,9 +118,15 @@ class ItemStore(
         dispatch(MVI.Store.Intent.LoadingIntent(loading = false))
     }
 
-    fun actionUpdateItem(updatedItem : Item) = produceAction { dispatch ->
+    fun actionUpdateItem(itemId : Int, description: String, quantity: Int) = produceAction { dispatch ->
         dispatch(MVI.Store.Intent.LoadingIntent(loading = true))
-        dispatch(Intent.UpdateItem(updatedItem))
+        dispatch(Intent.UpdateItem(itemId,description,quantity))
+        dispatch(MVI.Store.Intent.LoadingIntent(loading = false))
+    }
+
+    fun actionFetchItemById(itemId: Int) = produceAction { dispatch ->
+        dispatch(MVI.Store.Intent.LoadingIntent(loading = true))
+        dispatch(Intent.FetchItemById(itemId))
         dispatch(MVI.Store.Intent.LoadingIntent(loading = false))
     }
 
