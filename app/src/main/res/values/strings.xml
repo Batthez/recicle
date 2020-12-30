@@ -20,4 +20,6 @@
     <string name="ok">Ok</string>
     <string name="atualize_informacoes">Atualize as informações</string>
     <string name="carregando_item_aguarde">Carregando Item, aguarde...</string>
+    <string name="atualizar">Atualizar</string>
+    <string name="deletar_item">Deletar Item</string>
 </resources>

@@ -20,7 +20,7 @@ class CreateUpdateItemFragment : Fragment() {
 
     private lateinit var store: ItemStore
     private lateinit var storeFactory: StoreFactory
-    private lateinit var informationDialog: AlertDialog
+    private var informationDialog: AlertDialog? = null
     private var isToUpdate = false
 
     override fun onCreateView(
@@ -32,6 +32,16 @@ class CreateUpdateItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initStore()
         verifyIfNeedsToUpdateItem()
+        settingOnClickListeners()
+
+    }
+
+    private fun settingOnClickListeners(){
+
+        button_delete_item.setOnClickListener{
+            store.actionDeleteItem()
+        }
+
         button_second.setOnClickListener {
             onClickCreateUpdateButton()
         }
@@ -41,6 +51,8 @@ class CreateUpdateItemFragment : Fragment() {
         isToUpdate = true
         text_view_title.text = getString(R.string.atualize_informacoes)
         text_view_loading_item.visibility = View.VISIBLE
+        button_second.text = getString(R.string.atualizar)
+        button_delete_item.visibility = View.VISIBLE
     }
 
     private fun verifyIfNeedsToUpdateItem() {
@@ -99,9 +111,9 @@ class CreateUpdateItemFragment : Fragment() {
                 state.message.message?.let {
                     dialog(it)
                 }
-                enableButtonClickability()
-            }
 
+            }
+            enableButtonClickability()
             selectedItem?.let {
                 resolvingFetchedItem(it.description, it.quantity)
             }
@@ -115,22 +127,24 @@ class CreateUpdateItemFragment : Fragment() {
     }
 
     private fun dialog(text: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        with(builder) {
-            setTitle(text)
-            setCancelable(false)
-            setPositiveButton(getString(R.string.ok)) { _, _ -> clearFields() }
+
+        if(informationDialog == null){
+            val builder = AlertDialog.Builder(requireContext())
+            with(builder) {
+                setTitle(text)
+                setCancelable(false)
+                setPositiveButton(getString(R.string.ok)) { _, _ -> navigateBack() }
+            }
+            informationDialog = builder.create()
         }
 
-        informationDialog = builder.create()
-        informationDialog.show()
-
-        store.actionClearMessage()
+        if(!informationDialog!!.isShowing){
+            informationDialog?.show()
+            store.actionClearMessage()
+        }
     }
 
-    private fun clearFields() {
-        text_quantidade.setText("")
-        text_descricao.setText("")
+    private fun navigateBack() {
         findNavController().navigate(R.id.action_close_fragment_and_navigate_to_listFragment)
     }
 }

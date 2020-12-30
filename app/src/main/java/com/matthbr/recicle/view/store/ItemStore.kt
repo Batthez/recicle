@@ -87,9 +87,17 @@ class ItemStore(
     }
 
     private suspend fun reducerDeleteItem(intent : Intent.DeleteItem) = produceReducer { setState ->
+
         getState().data.copy().selectedItem?.let {
             itemRepository.deleteItem(it)
         }
+
+        setState(
+            getState().copy(
+                message = Message(MessageType.SUCCESS, null, "Item deletado!")
+            )
+
+        )
     }
 
     private suspend fun reducerFetchItemById(intent : Intent.FetchItemById) = produceReducer { setState ->
