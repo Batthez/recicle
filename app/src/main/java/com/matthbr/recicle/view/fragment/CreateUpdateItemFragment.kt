@@ -15,7 +15,7 @@ import com.matthbr.recicle.view.store.ItemStore
 import com.matthbr.recicle.view.store.StoreFactory
 import kotlinx.android.synthetic.main.fragment_second.*
 
-class CreateItemFragment : Fragment() {
+class CreateUpdateItemFragment : Fragment() {
 
     private lateinit var store: ItemStore
     private lateinit var storeFactory: StoreFactory

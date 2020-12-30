@@ -25,7 +25,6 @@ import kotlinx.coroutines.InternalCoroutinesApi
 
 class ItemListFragment : Fragment() {
 
-    @InternalCoroutinesApi
     private lateinit var store: ItemStore
     private lateinit var storeFactory: StoreFactory
     private lateinit var itemListAdapter: ItemListAdapter
@@ -33,12 +32,8 @@ class ItemListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_first, container, false)
-    }
+    ): View? =  inflater.inflate(R.layout.fragment_first, container, false)
 
-    @InternalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initStore()
@@ -50,7 +45,6 @@ class ItemListFragment : Fragment() {
         }
     }
 
-    @InternalCoroutinesApi
     private fun initStore() {
         storeFactory = StoreFactory(requireContext())
 
@@ -58,12 +52,10 @@ class ItemListFragment : Fragment() {
         store.state.observe(viewLifecycleOwner, stateObserver())
     }
 
-    @InternalCoroutinesApi
     private fun initData(){
         store.actionLoadItems()
     }
 
-    @InternalCoroutinesApi
     private fun stateObserver() = Observer<MVI.Store.State<ItemStore.Data>> { state ->
         with(state.data) {
 
