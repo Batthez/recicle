@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Adapter
 import android.widget.Button
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +20,7 @@ import com.matthbr.recicle.R
 import com.matthbr.recicle.domain.model.Item
 import com.matthbr.recicle.mvi.MVI
 import com.matthbr.recicle.view.adapter.ItemListAdapter
+import com.matthbr.recicle.view.fragment.listeners.OnItemClickListener
 import com.matthbr.recicle.view.store.ItemStore
 import com.matthbr.recicle.view.store.StoreFactory
 import kotlinx.android.synthetic.main.fragment_first.*
@@ -39,6 +42,7 @@ class ItemListFragment : Fragment() {
         initStore()
         initData()
         setupItemList()
+        settingOnItemClick()
 
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
@@ -69,6 +73,14 @@ class ItemListFragment : Fragment() {
             }
 
         }
+    }
+
+    private fun settingOnItemClick(){
+        itemListAdapter.setOnItemClick(object : OnItemClickListener{
+            override fun onItemClick(itemId: Int) {
+                findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment, bundleOf("itemId" to itemId))
+            }
+        })
     }
 
     private fun setUpAdapterList(item : List<Item>){
