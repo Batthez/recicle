@@ -37,19 +37,19 @@ class CreateUpdateItemFragment : Fragment() {
         }
     }
 
-    private fun configureFragmentToUpdateItem(){
+    private fun configureFragmentToUpdateItem() {
+        isToUpdate = true
         text_view_title.text = getString(R.string.atualize_informacoes)
         text_view_loading_item.visibility = View.VISIBLE
     }
 
-    private fun verifyIfNeedsToUpdateItem(){
-        arguments?.let {
-            val itemId = it.getInt("itemId", -1)
-            if(itemId != -1){
-                configureFragmentToUpdateItem()
-                store.actionFetchItemById(itemId)
-            }
+    private fun verifyIfNeedsToUpdateItem() {
+        val itemId = arguments?.getInt("itemId")
+        if (itemId != 0) {
+            configureFragmentToUpdateItem()
+            store.actionFetchItemById(itemId!!)
         }
+
     }
 
     private fun fieldsOk(): Boolean {
@@ -73,15 +73,14 @@ class CreateUpdateItemFragment : Fragment() {
     }
 
 
-
     private fun onClickCreateUpdateButton() {
         if (fieldsOk()) {
             val description = text_descricao.text.toString().trim()
             val quantity = text_quantidade.text.toString().toInt()
 
-            if(isToUpdate){
-                store.actionUpdateItem(id, description,quantity)
-            }else{
+            if (isToUpdate) {
+                store.actionUpdateItem(id, description, quantity)
+            } else {
                 store.actionInsertItem(description, quantity)
             }
             disableButtonClickability()
@@ -103,13 +102,13 @@ class CreateUpdateItemFragment : Fragment() {
                 enableButtonClickability()
             }
 
-            actualItem?.let {
-                resolvingFetchedItem(it.description,it.quantity)
+            selectedItem?.let {
+                resolvingFetchedItem(it.description, it.quantity)
             }
         }
     }
 
-    private fun resolvingFetchedItem(description : String, quantity : Int){
+    private fun resolvingFetchedItem(description: String, quantity: Int) {
         text_quantidade.setText(quantity.toString())
         text_descricao.setText(description)
         text_view_loading_item.visibility = View.GONE

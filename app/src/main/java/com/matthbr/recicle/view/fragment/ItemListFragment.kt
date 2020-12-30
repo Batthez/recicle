@@ -77,7 +77,8 @@ class ItemListFragment : Fragment() {
     private fun settingOnItemClick(){
         itemListAdapter.setOnItemClick(object : OnItemClickListener{
             override fun onItemClick(itemId: Int) {
-                findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment, bundleOf("itemId" to itemId))
+                val action = ItemListFragmentDirections.actionFirstFragmentToSecondFragment(itemId)
+                findNavController().navigate(action)
             }
         })
     }

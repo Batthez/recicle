@@ -10,7 +10,7 @@ class ItemStore(
 
     data class Data(
         var itemList: List<Item>? = null,
-        var actualItem : Item? = null
+        var selectedItem : Item? = null
     )
 
     sealed class Intent : MVI.Store.Intent() {
@@ -19,9 +19,7 @@ class ItemStore(
             val description: String,
             val quantity: Int
         ) : Intent()
-        class DeleteItem(
-            val itemToDelete : Item
-        ) : Intent()
+        class DeleteItem() : Intent()
         class UpdateItem(
             val itemId: Int,
             val description: String,
@@ -89,11 +87,21 @@ class ItemStore(
     }
 
     private suspend fun reducerDeleteItem(intent : Intent.DeleteItem) = produceReducer { setState ->
-        itemRepository.deleteItem(intent.itemToDelete)
+        getState().data.copy().selectedItem?.let {
+            itemRepository.deleteItem(it)
+        }
     }
 
     private suspend fun reducerFetchItemById(intent : Intent.FetchItemById) = produceReducer { setState ->
-        val itemFetched = itemRepository.fetchItemById(intent.itemId)
+        val fetchedItem = itemRepository.fetchItemById(intent.itemId)
+
+        setState(
+            getState().copy(
+                data = getState().data.copy(
+                    selectedItem = fetchedItem
+                )
+            )
+        )
     }
 
     fun actionLoadItems() = produceAction { dispatch ->
@@ -112,9 +120,9 @@ class ItemStore(
         dispatch(MVI.Store.Intent.MessageIntent(null))
     }
 
-    fun actionDeleteItem(itemToDelete : Item) = produceAction {dispatch ->
+    fun actionDeleteItem() = produceAction {dispatch ->
         dispatch(MVI.Store.Intent.LoadingIntent(loading = true))
-        dispatch(Intent.DeleteItem(itemToDelete))
+        dispatch(Intent.DeleteItem())
         dispatch(MVI.Store.Intent.LoadingIntent(loading = false))
     }
 
