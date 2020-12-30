@@ -74,11 +74,15 @@ class ItemStore(
         }
 
     private suspend fun reducerUpdateItem(intent : Intent.UpdateItem) = produceReducer {setState ->
-        itemRepository.updateItem(Item(
-            id = intent.itemId,
-            description = intent.description,
-            quantity = intent.quantity
-        ))
+
+        val oldItem = getState().data.copy().selectedItem
+
+        oldItem?.let {
+            it.description = intent.description
+            it.quantity = intent.quantity
+            itemRepository.updateItem(it)
+        }
+
         setState(
             getState().copy(
                 message = Message(MessageType.SUCCESS, null, "Item atualizado!")
