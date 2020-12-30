@@ -24,11 +24,11 @@ class ItemListRepositoryImpl(
     }
 
     override suspend fun updateItem(item: Item) {
-        TODO("Not yet implemented")
+        itemDAO.updateItem(item)
     }
 
     override suspend fun deleteItem(item: Item) {
-        TODO("Not yet implemented")
+        itemDAO.deleteItem(item)
     }
 
 }

@@ -18,6 +18,12 @@ class ItemStore(
             val description: String,
             val quantity: Int
         ) : Intent()
+        class DeleteItem(
+            val itemToDelete : Item
+        ) : Intent()
+        class UpdateItem(
+            val itemUpdated : Item
+        ) : Intent()
     }
 
     override fun initialData(): Data = Data()
@@ -26,6 +32,8 @@ class ItemStore(
         when (intent) {
             is Intent.LoadAllItems -> reducerLoadCustomerWithDetails(intent)
             is Intent.InsertNewItem -> reducerInsertNewItem(intent)
+            is Intent.UpdateItem -> reducerUpdateItem(intent)
+            is Intent.DeleteItem -> reducerDeleteItem(intent)
         }
 
 
@@ -60,6 +68,19 @@ class ItemStore(
 
         }
 
+    private suspend fun reducerUpdateItem(intent : Intent.UpdateItem) = produceReducer {setState ->
+        itemRepository.updateItem(intent.itemUpdated)
+        setState(
+            getState().copy(
+                message = Message(MessageType.SUCCESS, null, "Item atualizado!")
+            )
+        )
+    }
+
+    private suspend fun reducerDeleteItem(intent : Intent.DeleteItem) = produceReducer { setState ->
+        itemRepository.deleteItem(intent.itemToDelete)
+    }
+
     fun actionLoadItems() = produceAction { dispatch ->
         dispatch(MVI.Store.Intent.LoadingIntent(loading = true))
         dispatch(Intent.LoadAllItems())
@@ -74,6 +95,18 @@ class ItemStore(
 
     fun actionClearMessage() = produceAction { dispatch ->
         dispatch(MVI.Store.Intent.MessageIntent(null))
+    }
+
+    fun actionDeleteItem(itemToDelete : Item) = produceAction {dispatch ->
+        dispatch(MVI.Store.Intent.LoadingIntent(loading = true))
+        dispatch(Intent.DeleteItem(itemToDelete))
+        dispatch(MVI.Store.Intent.LoadingIntent(loading = false))
+    }
+
+    fun actionUpdateItem(updatedItem : Item) = produceAction { dispatch ->
+        dispatch(MVI.Store.Intent.LoadingIntent(loading = true))
+        dispatch(Intent.UpdateItem(updatedItem))
+        dispatch(MVI.Store.Intent.LoadingIntent(loading = false))
     }
 
 
