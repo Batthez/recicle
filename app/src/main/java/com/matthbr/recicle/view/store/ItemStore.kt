@@ -22,7 +22,7 @@ class ItemStore(
             val itemToDelete : Item
         ) : Intent()
         class UpdateItem(
-            val itemUpdated : Item
+            val updatedItem : Item
         ) : Intent()
     }
 
@@ -69,7 +69,7 @@ class ItemStore(
         }
 
     private suspend fun reducerUpdateItem(intent : Intent.UpdateItem) = produceReducer {setState ->
-        itemRepository.updateItem(intent.itemUpdated)
+        itemRepository.updateItem(intent.updatedItem)
         setState(
             getState().copy(
                 message = Message(MessageType.SUCCESS, null, "Item atualizado!")
