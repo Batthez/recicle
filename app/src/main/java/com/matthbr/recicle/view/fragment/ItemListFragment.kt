@@ -71,7 +71,6 @@ class ItemListFragment : Fragment() {
             itemList?.let {
                 setUpAdapterList(it)
             }
-
         }
     }
 

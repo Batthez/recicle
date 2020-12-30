@@ -39,14 +39,15 @@ class CreateUpdateItemFragment : Fragment() {
 
     private fun configureFragmentToUpdateItem(){
         text_view_title.text = getString(R.string.atualize_informacoes)
-
+        text_view_loading_item.visibility = View.VISIBLE
     }
 
     private fun verifyIfNeedsToUpdateItem(){
         arguments?.let {
-            val itemId = it.get("itemId")
-            if(itemId != null){
+            val itemId = it.getInt("itemId", -1)
+            if(itemId != -1){
                 configureFragmentToUpdateItem()
+                store.actionFetchItemById(itemId)
             }
         }
     }
@@ -101,7 +102,17 @@ class CreateUpdateItemFragment : Fragment() {
                 }
                 enableButtonClickability()
             }
+
+            actualItem?.let {
+                resolvingFetchedItem(it.description,it.quantity)
+            }
         }
+    }
+
+    private fun resolvingFetchedItem(description : String, quantity : Int){
+        text_quantidade.setText(quantity.toString())
+        text_descricao.setText(description)
+        text_view_loading_item.visibility = View.GONE
     }
 
     private fun dialog(text: String) {
